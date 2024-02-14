@@ -17,23 +17,23 @@ Para iniciar a API de Payment junto com os serviços dependentes, siga os passos
 1. **Clone o Repositório (se aplicável)**
    Certifique-se de ter o código fonte localmente. Se necessário, clone o repositório usando:
 
-   \`\`\`bash
+   ```bash
    git clone <url-do-repositorio>
-   \`\`\`
+   ```
 
 2. **Navegue até o Diretório do Projeto**
    Altere para o diretório que contém o arquivo `docker-compose.yml`:
 
-   \`\`\`bash
+   ```bash
    cd <caminho-para-o-diretorio>
-   \`\`\`
+   ```
 
 3. **Inicie os Serviços com Docker Compose**
    Execute o seguinte comando para iniciar todos os serviços definidos no `docker-compose.yml`, incluindo a Payment API:
 
-   \`\`\`bash
+   ```bash
    docker-compose up -d
-   \`\`\`
+   ```
 
    Este comando construirá as imagens necessárias (se ainda não estiverem construídas) e iniciará os contêineres em modo desanexado.
 
@@ -53,8 +53,8 @@ Ao executar o comando acima, os seguintes serviços serão iniciados:
 
 Após o início, a API de Payment estará disponível em:
 
-\`\`\`
+```
 http://localhost:8084/
-\`\`\`
+```
 
 Você pode interagir com a API usando ferramentas como cURL, Postman ou qualquer cliente HTTP de sua escolha.
