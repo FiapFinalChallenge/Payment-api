@@ -8,7 +8,9 @@ import payment.application.dto.response.PaymentResponse;
 import payment.application.mapper.PaymentMapper;
 import payment.domain.repository.IPaymentRepository;
 import payment.domain.service.contract.IPaymentService;
+import payment.infra.external.CartClient;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ import java.util.List;
 public class PaymentServiceImpl implements IPaymentService {
 
     private final IPaymentRepository repository;
+    private final CartClient cartClient;
     private final PaymentMapper mapper;
 
     @Override
@@ -34,6 +37,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public PaymentResponse create(PaymentRequest paymentRequest) {
+        paymentRequest.setValue(getTotalValue(paymentRequest.getCartId()));
+
         return mapper.convertToPaymentResponse(repository
                 .save(mapper.convertToPayment(paymentRequest)));
     }
@@ -49,5 +54,9 @@ public class PaymentServiceImpl implements IPaymentService {
     public void deleteById(Long id) {
         getById(id);
         repository.deleteById(id);
+    }
+
+    private BigDecimal getTotalValue(Long cartId) {
+        return cartClient.getCartById(cartId).totalValue();
     }
 }
