@@ -1,4 +1,12 @@
 package payment.application.dto.response;
 
-public record PaymentResponse(Long id, Double value) {
+import payment.domain.enums.EPaymentStatus;
+
+import java.math.BigDecimal;
+
+public record PaymentResponse(
+        Long id,
+        Long cartId,
+        BigDecimal value,
+        EPaymentStatus status) {
 }

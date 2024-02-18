@@ -1,4 +1,6 @@
 package payment.application.dto.request;
 
-public record PaymentRequest(Double value) {
+import java.math.BigDecimal;
+
+public record PaymentRequest(Long cartId, BigDecimal value) {
 }

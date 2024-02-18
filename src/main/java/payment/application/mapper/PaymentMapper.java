@@ -10,9 +10,17 @@ import payment.domain.model.Payment;
 public interface PaymentMapper {
 
     @Mapping(target = "id", source = "payment.id")
+    @Mapping(target = "cartId", source = "payment.cartId")
     @Mapping(target = "value", source = "payment.value")
+    @Mapping(target = "status", source = "payment.status")
     PaymentResponse convertToPaymentResponse(Payment payment);
 
+    @Mapping(target = "cartId", source = "paymentRequest.cartId")
     @Mapping(target = "value", source = "paymentRequest.value")
     Payment convertToPayment(PaymentRequest paymentRequest);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "cartId", source = "paymentRequest.cartId")
+    @Mapping(target = "value", source = "paymentRequest.value")
+    Payment convertToPaymentWithId(PaymentRequest paymentRequest, Long id);
 }

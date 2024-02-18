@@ -2,6 +2,9 @@ package payment.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import payment.domain.enums.EPaymentStatus;
+
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -16,6 +19,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "cart_id", nullable = false)
+    private Long cartId;
+
     @Column(name = "value", nullable = false)
-    private Double value;
+    private BigDecimal value;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private EPaymentStatus status = EPaymentStatus.PENDING;
 }
