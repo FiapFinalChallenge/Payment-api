@@ -9,11 +9,9 @@ public interface IPaymentService {
 
     List<PaymentResponse> getAll();
 
-    PaymentResponse getById(Long id);
+    PaymentResponse getPayment(Long id);
 
-    PaymentResponse create(PaymentRequest paymentRequest);
+    PaymentResponse payment(PaymentRequest paymentRequest);
 
-    PaymentResponse update(Long id, PaymentRequest paymentRequest);
-
-    void deleteById(Long id);
+    PaymentResponse cancelPayment(Long id);
 }

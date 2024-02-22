@@ -115,6 +115,7 @@
 					<compilerArgs>
 						<compilerArg>-Amapstruct.suppressGeneratorTimestamp=true</compilerArg>
 						<compilerArg>-Amapstruct.suppressGeneratorVersionInfoComment=true</compilerArg>
+						<compilerArg>-parameters</compilerArg>
 					</compilerArgs>
 				</configuration>
 			</plugin>

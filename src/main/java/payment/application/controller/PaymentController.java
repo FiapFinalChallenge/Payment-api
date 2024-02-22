@@ -23,22 +23,17 @@ public class PaymentController implements IPaymentController {
     }
 
     @Override
-    public PaymentResponse getById(Long id) {
-        return service.getById(id);
+    public PaymentResponse getPayment(Long id) {
+        return service.getPayment(id);
     }
 
     @Override
-    public PaymentResponse create(PaymentRequest paymentRequest) {
-        return service.create(paymentRequest);
+    public PaymentResponse payment(PaymentRequest paymentRequest) {
+        return service.payment(paymentRequest);
     }
 
     @Override
-    public PaymentResponse update(Long id, PaymentRequest paymentRequest) {
-        return service.update(id, paymentRequest);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        service.deleteById(id);
+    public PaymentResponse cancelPayment(Long id) {
+        return service.cancelPayment(id);
     }
 }

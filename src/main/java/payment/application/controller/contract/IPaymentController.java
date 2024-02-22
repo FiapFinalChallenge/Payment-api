@@ -1,5 +1,6 @@
 package payment.application.controller.contract;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import payment.application.dto.request.PaymentRequest;
 import payment.application.dto.response.PaymentResponse;
@@ -12,14 +13,11 @@ public interface IPaymentController {
     List<PaymentResponse> getAll();
 
     @GetMapping("{id}")
-    PaymentResponse getById(@PathVariable Long id);
+    PaymentResponse getPayment(@PathVariable Long id);
 
     @PostMapping
-    PaymentResponse create(@RequestBody PaymentRequest paymentRequest);
+    PaymentResponse payment(@RequestBody @Valid PaymentRequest paymentRequest);
 
-    @PutMapping("{id}")
-    PaymentResponse update(@PathVariable Long id, @RequestBody PaymentRequest paymentRequest);
-
-    @DeleteMapping("{id}")
-    void deleteById(@PathVariable Long id);
+    @PutMapping("{id}/cancel")
+    PaymentResponse cancelPayment(@PathVariable Long id);
 }

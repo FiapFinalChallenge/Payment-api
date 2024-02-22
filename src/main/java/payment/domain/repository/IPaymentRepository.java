@@ -12,6 +12,4 @@ public interface IPaymentRepository {
     Optional<Payment> findById(Long id);
 
     Payment save(Payment payment);
-
-    void deleteById(Long id);
 }
