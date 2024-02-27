@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import payment.application.exception.dto.ErrorMessage;
 import payment.domain.exception.PaymentApiException;
 
@@ -71,5 +73,11 @@ public class GlobalExceptionHandler {
             log.error("Error processing Feign exception", e);
         }
         return new ErrorMessage("Unknown error", null);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({AuthenticationException.class, HttpClientErrorException.class})
+    public ErrorMessage handleAuthenticationException(AuthenticationException ex) {
+        return new ErrorMessage("token_invalid", "Unknown or expired token.");
     }
 }
