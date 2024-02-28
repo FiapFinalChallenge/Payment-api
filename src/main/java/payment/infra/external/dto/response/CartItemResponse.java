@@ -1,4 +1,4 @@
 package payment.infra.external.dto.response;
 
-public record CartItemResponse(Integer amount) {
+public record CartItemResponse(Long itemId, Integer amount) {
 }

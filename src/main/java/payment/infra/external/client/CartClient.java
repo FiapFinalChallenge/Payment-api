@@ -1,4 +1,4 @@
-package payment.infra.external;
+package payment.infra.external.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -2,6 +2,7 @@ package payment.domain.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import payment.application.dto.request.PaymentRequest;
 import payment.application.dto.response.PaymentResponse;
@@ -10,9 +11,10 @@ import payment.domain.enums.EPaymentStatus;
 import payment.domain.model.Payment;
 import payment.domain.repository.IPaymentRepository;
 import payment.domain.service.contract.IPaymentService;
-import payment.infra.external.CartClient;
+import payment.infra.external.client.CartClient;
+import payment.infra.external.client.ItemClient;
+import payment.infra.external.dto.response.CartItemResponse;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -20,8 +22,10 @@ import java.util.List;
 public class PaymentServiceImpl implements IPaymentService {
 
     private static final String PAYMENT_NOT_FOUND = "Not found payment ID: ";
+    private static final String PAYMENT_CART_ALREADY_EXISTS = "A cart can only be associated with one payment.";
     private final IPaymentRepository repository;
     private final CartClient cartClient;
+    private final ItemClient itemClient;
     private final PaymentMapper mapper;
 
     @Override
@@ -39,10 +43,14 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public PaymentResponse payment(PaymentRequest paymentRequest) {
-        paymentRequest.setValue(getTotalValue(paymentRequest.getCartId()));
+        try {
+            changeInformation(paymentRequest);
 
-        return mapper.convertToPaymentResponse(repository
-                .save(mapper.convertToPayment(paymentRequest)));
+            return mapper.convertToPaymentResponse(repository
+                    .save(mapper.convertToPayment(paymentRequest)));
+        } catch (DataIntegrityViolationException ex) {
+            throw new DataIntegrityViolationException(PAYMENT_CART_ALREADY_EXISTS);
+        }
     }
 
     @Override
@@ -53,8 +61,16 @@ public class PaymentServiceImpl implements IPaymentService {
         return mapper.convertToPaymentResponse(repository.save(payment));
     }
 
-    private BigDecimal getTotalValue(Long cartId) {
-        return cartClient.getCartById(cartId).totalValue();
+    private void changeInformation(PaymentRequest paymentRequest) {
+        var cart = cartClient.getCartById(paymentRequest.getCartId());
+
+        paymentRequest.setValue(cart.totalValue());
+        paymentRequest.setStatus(EPaymentStatus.COMPLETED);
+        decreaseItemAmount(cart.items());
+    }
+
+    private void decreaseItemAmount(List<CartItemResponse> items) {
+        items.forEach(item -> itemClient.decreaseItemAmount(item.itemId(), item.amount()));
     }
 
     private Payment getPaymentById(Long id) {

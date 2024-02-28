@@ -19,7 +19,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cart_id", nullable = false)
+    @Column(name = "cart_id", nullable = false, unique = true)
     private Long cartId;
 
     @Column(name = "value", nullable = false)

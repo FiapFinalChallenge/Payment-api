@@ -17,6 +17,7 @@ public interface PaymentMapper {
 
     @Mapping(target = "cartId", source = "paymentRequest.cartId")
     @Mapping(target = "value", source = "paymentRequest.value")
+    @Mapping(target = "status", source = "paymentRequest.status")
     Payment convertToPayment(PaymentRequest paymentRequest);
 
     @Mapping(target = "id", source = "id")

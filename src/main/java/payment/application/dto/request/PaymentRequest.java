@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import payment.domain.enums.EPaymentStatus;
 
 import java.math.BigDecimal;
 
@@ -16,4 +17,7 @@ public class PaymentRequest {
 
     @Setter
     private BigDecimal value;
+
+    @Setter
+    private EPaymentStatus status;
 }
