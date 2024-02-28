@@ -10,4 +10,7 @@ public interface ItemClient {
 
     @PutMapping("api/items/{id}/decrease")
     void decreaseItemAmount(@PathVariable Long id, @RequestParam int amount);
+
+    @PutMapping("api/items/{id}/increase")
+    void increaseItemAmount(@PathVariable Long id, @RequestParam int amount);
 }

@@ -14,6 +14,7 @@ import payment.domain.service.contract.IPaymentService;
 import payment.infra.external.client.CartClient;
 import payment.infra.external.client.ItemClient;
 import payment.infra.external.dto.response.CartItemResponse;
+import payment.infra.external.dto.response.CartResponse;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class PaymentServiceImpl implements IPaymentService {
     @Override
     public PaymentResponse payment(PaymentRequest paymentRequest) {
         try {
-            changeInformation(paymentRequest);
+            changeInformationStatusCompleted(paymentRequest);
 
             return mapper.convertToPaymentResponse(repository
                     .save(mapper.convertToPayment(paymentRequest)));
@@ -56,21 +57,36 @@ public class PaymentServiceImpl implements IPaymentService {
     @Override
     public PaymentResponse cancelPayment(Long id) {
         var payment = getPaymentById(id);
-        payment.setStatus(EPaymentStatus.CANCELLED);
+        changeInformationStatusCancelled(payment);
 
         return mapper.convertToPaymentResponse(repository.save(payment));
     }
 
-    private void changeInformation(PaymentRequest paymentRequest) {
-        var cart = cartClient.getCartById(paymentRequest.getCartId());
+    private void changeInformationStatusCompleted(PaymentRequest paymentRequest) {
+        var cart = getCartById(paymentRequest.getCartId());
 
         paymentRequest.setValue(cart.totalValue());
         paymentRequest.setStatus(EPaymentStatus.COMPLETED);
         decreaseItemAmount(cart.items());
     }
 
+    private void changeInformationStatusCancelled(Payment payment) {
+        var cart = getCartById(payment.getCartId());
+
+        payment.setStatus(EPaymentStatus.CANCELLED);
+        increaseItemAmount(cart.items());
+    }
+
+    private CartResponse getCartById(Long id) {
+        return cartClient.getCartById(id);
+    }
+
     private void decreaseItemAmount(List<CartItemResponse> items) {
         items.forEach(item -> itemClient.decreaseItemAmount(item.itemId(), item.amount()));
+    }
+
+    private void increaseItemAmount(List<CartItemResponse> items) {
+        items.forEach(item -> itemClient.increaseItemAmount(item.itemId(), item.amount()));
     }
 
     private Payment getPaymentById(Long id) {
