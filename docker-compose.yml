@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql-db:
-    image: mysql:8.0.0
+    image: mysql:8.0.36
     environment:
       MYSQL_DATABASE: 'ecommerce'
       MYSQL_USER: 'user'
@@ -22,11 +22,12 @@ services:
   spring-cloud-config-server:
     image: marcoscosta01/spring-cloud-service:latest
     ports:
-      - "8888:8888"
+      - "8080:8080"
     depends_on:
       - eureka-server
     networks:
       - ecommerce-network
+    command: ["./bash/wait-for-it.sh", "eureka-server", "8761", "Eureka Server"]
 
   authentication-service:
     image: marcoscosta01/authentication-service:latest
@@ -38,6 +39,7 @@ services:
       - spring-cloud-config-server
     networks:
       - ecommerce-network
+    command: ["./bash/wait-for-it.sh", "spring-cloud-config-server", "8080", "Gateway"]
 
   items-service:
     image: marcoscosta01/items-service:latest
@@ -50,6 +52,7 @@ services:
       - authentication-service
     networks:
       - ecommerce-network
+    command: ["./bash/wait-for-it.sh", "authentication-service", "8081", "Authentication"]
 
   cart-service:
     image: marcoscosta01/cart-service:latest
@@ -63,6 +66,7 @@ services:
       - items-service
     networks:
       - ecommerce-network
+    command: ["./bash/wait-for-it.sh", "items-service", "8082", "Items"]
 
   payment-service:
     build: .
@@ -77,6 +81,7 @@ services:
       - cart-service
     networks:
       - ecommerce-network
+    command: ["./bash/wait-for-it.sh", "cart-service", "8083", "Cart"]
 
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ecommerce?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
